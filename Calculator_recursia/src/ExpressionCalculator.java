@@ -34,7 +34,7 @@ public class ExpressionCalculator {
 	}
 
 	public static void main(String args[]) {
-		String str1 = ("((2+2)-2+2)");
+		String str1 = ("((2*2)*2/2)");
 
 		System.out.println(ExpressionCalculator.calculate(str1));
 	}
