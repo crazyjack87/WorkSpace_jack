@@ -25,7 +25,7 @@ public class ExpressionCalculator {
 	}
 
 	public static void main(String args[]) {
-		String str1 = new String("2+2+5+(6+7+50+3*10)");
+		String str1 = new String("4+5+((13+15)-20)");
 		// int[] y = poiskIndexGlavnogoVurojenie(str1, 2);
 		// // String MasivVurajeniVskobka = "====";
 		// // StringBuffer strr22;
@@ -44,12 +44,13 @@ public class ExpressionCalculator {
 		int KolichestvoParSkoba = KolichestvoParSkoba(str1);
 		int IndexSkobok[] = new int[2];
 		StringBuffer str1_buffer = new StringBuffer(str1.subSequence(0, str1.length()));
-		String VurajeniNeVGlavnuhSkobka = "";
+		String VurajeniVGlavnuhSkobka = "";
 		if (KolichestvoParSkoba != 0) {
 			for (int i = 0; i < KolichestvoParSkoba; i++) {
+			
 				IndexSkobok = poiskIndexGlavnogoVurojenie(str1, KolichestvoParSkoba);
-				VurajeniNeVGlavnuhSkobka = poiskGlavnogoVurajenia(str1, KolichestvoParSkoba);
-				VurajeniNeVGlavnuhSkobka = PodschetVskobkah(VurajeniNeVGlavnuhSkobka);
+				VurajeniVGlavnuhSkobka = poiskGlavnogoVurajenia(str1, KolichestvoParSkoba);
+				VurajeniVGlavnuhSkobka = PodschetVskobkah(VurajeniVGlavnuhSkobka);
 				// str1_buffer = str1_buffer.delete(IndexSkobok[0],
 				// IndexSkobok[1]);
 				// str1_buffer = str1_buffer.insert(IndexSkobok[0],
@@ -58,11 +59,13 @@ public class ExpressionCalculator {
 				// VurajeniNeVGlavnuhSkobka);
 
 				// str1 = str1_buffer.toString();
+				str1 = str1.replace((str1.substring(IndexSkobok[0], IndexSkobok[1] +1)), VurajeniVGlavnuhSkobka);
+
 			}
 		}
-		System.out.println(VurajeniNeVGlavnuhSkobka);
-		// System.out.println(IndexSkobok[0]);
-		// System.out.println(IndexSkobok[1]);
+		System.out.println(str1);
+		 System.out.println(IndexSkobok[0]);
+		 System.out.println(IndexSkobok[1]);
 	}
 
 	static private String PodschetVskobkah(String str1) {
