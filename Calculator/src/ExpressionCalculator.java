@@ -25,7 +25,7 @@ public class ExpressionCalculator {
 	}
 
 	public static void main(String args[]) {
-		String str1 = new String("(6-2*2)+(6*6+5)");
+		String str1 = new String("2+2+5+(6+7+50+3*10)");
 		// int[] y = poiskIndexGlavnogoVurojenie(str1, 2);
 		// // String MasivVurajeniVskobka = "====";
 		// // StringBuffer strr22;
@@ -42,23 +42,27 @@ public class ExpressionCalculator {
 		str1 = proverkaSkoba(str1);
 
 		int KolichestvoParSkoba = KolichestvoParSkoba(str1);
+		int IndexSkobok[] = new int[2];
+		StringBuffer str1_buffer = new StringBuffer(str1.subSequence(0, str1.length()));
+		String VurajeniNeVGlavnuhSkobka = "";
 		if (KolichestvoParSkoba != 0) {
-			StringBuffer str1_buffer = new StringBuffer(str1.subSequence(0, str1.length()));
 			for (int i = 0; i < KolichestvoParSkoba; i++) {
-				int IndexSkobok[] = new int[2];
 				IndexSkobok = poiskIndexGlavnogoVurojenie(str1, KolichestvoParSkoba);
-				String VurajeniNeVGlavnuhSkobka = "";
 				VurajeniNeVGlavnuhSkobka = poiskGlavnogoVurajenia(str1, KolichestvoParSkoba);
 				VurajeniNeVGlavnuhSkobka = PodschetVskobkah(VurajeniNeVGlavnuhSkobka);
-//				str1_buffer = str1_buffer.delete(IndexSkobok[0], IndexSkobok[1]);
-//				str1_buffer = str1_buffer.insert(IndexSkobok[0], VurajeniNeVGlavnuhSkobka);
-				str1_buffer.replace(IndexSkobok[0], IndexSkobok[1],VurajeniNeVGlavnuhSkobka);
-				
-				str1 = str1_buffer.toString();
+				// str1_buffer = str1_buffer.delete(IndexSkobok[0],
+				// IndexSkobok[1]);
+				// str1_buffer = str1_buffer.insert(IndexSkobok[0],
+				// VurajeniNeVGlavnuhSkobka);
+				// str1_buffer.replace(IndexSkobok[0], IndexSkobok[1],
+				// VurajeniNeVGlavnuhSkobka);
 
+				// str1 = str1_buffer.toString();
 			}
 		}
-		System.out.println(str1);
+		System.out.println(VurajeniNeVGlavnuhSkobka);
+		// System.out.println(IndexSkobok[0]);
+		// System.out.println(IndexSkobok[1]);
 	}
 
 	static private String PodschetVskobkah(String str1) {
@@ -73,32 +77,30 @@ public class ExpressionCalculator {
 			case '*':
 				masivChislaBezZnakov[i + 1] = Double
 						.toString(tryParse(masivChislaBezZnakov[i]) * tryParse(masivChislaBezZnakov[i + 1]));
-				ZnakiBezChisel = ZnakiBezChisel.replaceFirst("(\\*)", " ");
 				masivChislaBezZnakov[i] = "";
 
 				break;
 			case '/':
 				masivChislaBezZnakov[i + 1] = Double
 						.toString(tryParse(masivChislaBezZnakov[i]) / tryParse(masivChislaBezZnakov[i + 1]));
-				ZnakiBezChisel = ZnakiBezChisel.replaceFirst("(\\/)", " ");
 				masivChislaBezZnakov[i] = "";
 				break;
 			}
 		}
 		String vurajeniePosleDilen = "";
-		for (int i = 0, j = 1; j < masivChislaBezZnakov.length; i++, j++) {
-			if (ZnakiBezChisel.charAt(i) == '+') {
-				vurajeniePosleDilen += ZnakiBezChisel.charAt(i);
-			} else if (ZnakiBezChisel.charAt(i) == '-') {
-				vurajeniePosleDilen += ZnakiBezChisel.charAt(i);
+		for (int i = 0; i < masivChislaBezZnakov.length; i++) {
+			vurajeniePosleDilen += masivChislaBezZnakov[i];
+			if (ZnakiBezChisel.length() != i) {
+				if (ZnakiBezChisel.charAt(i) == '+') {
+					vurajeniePosleDilen += ZnakiBezChisel.charAt(i);
+				} else if (ZnakiBezChisel.charAt(i) == '-') {
+					vurajeniePosleDilen += ZnakiBezChisel.charAt(i);
+				}
 			}
-			vurajeniePosleDilen += masivChislaBezZnakov[j];
 		}
 		vurajeniePosleDilen = vurajeniePosleDilen.replaceAll(" ", "");
 		String chislaBezZnakovPosleDilen = vurajeniePosleDilen.replaceAll("(\\+)", " ").replaceAll("(\\-)", " ");
-
 		String ZnakiBezChiselPosleDilenia = vurajeniePosleDilen.replaceAll("[0-9]", "").replace(".", "");
-
 		String[] masivChislaBezZnakovPosleDilen = chislaBezZnakovPosleDilen.split(" ");
 		String result = "";
 		for (int i = 0; i < ZnakiBezChiselPosleDilenia.length(); i++) {
@@ -117,9 +119,9 @@ public class ExpressionCalculator {
 			}
 		}
 		result += masivChislaBezZnakovPosleDilen[masivChislaBezZnakovPosleDilen.length - 1];
-//		if (result.indexOf(".") != -1) {
-//			result = result.substring(0, result.indexOf("."));
-//		}
+		// if (result.indexOf(".") != -1) {
+		// result = result.substring(0, result.indexOf("[.]"));
+		// }
 		return result;
 	}
 
@@ -129,11 +131,12 @@ public class ExpressionCalculator {
 		char[] charStr = str1.toCharArray();
 		String str2 = "";
 		int Skoba = 0;
-		for (int i = 0; i < charStr.length - 1; i++) {
-			if (charStr[i] == '(') {
+		for (int i = charStr.length - 1; i > 0; i--) {
+			if (charStr[i] == ')') {
 				Skoba += 1;
 			}
 			if (Skoba == KolichestvoParSkoba) {
+				i = str1.lastIndexOf("(", i);
 				while (charStr[++i] != ')') {
 					str2 += charStr[i];
 				}
@@ -147,15 +150,13 @@ public class ExpressionCalculator {
 		int[] IndexSkobok = new int[2];
 		int OtkrutaiaSkoba = 0;
 		char[] charStr = str1.toCharArray();
-		for (int i = 0; i < charStr.length; i++) {
-			if (charStr[i] == '(') {
+		for (int i = charStr.length - 1; i > 0; i--) {
+			if (charStr[i] == ')') {
 				OtkrutaiaSkoba += 1;
 			}
 			if (OtkrutaiaSkoba == KolichestvoParSkoba) {
-				IndexSkobok[0] = i;
-				for (; i < charStr.length; i++) {
-					IndexSkobok[1] = i+1;   //так и не пон€л зачем плюс один, и почему если перевести в стринг буфер по€вл€етс€ скобка справа без этого +1
-				}
+				IndexSkobok[1] = i;
+				IndexSkobok[0] = str1.lastIndexOf("(", i);
 				break;
 			}
 		}
